@@ -1,0 +1,27 @@
+{
+    "bridge": {
+        "name": "Unit-02 Bridge",
+        "username": "FF:22:3D:E3:CE:30",
+        "port": 51826,
+        "pin": "031-45-154"
+    },
+    "accessories": [],
+    "platforms": [
+      {
+            "platform": "Camera-ffmpeg",
+            "cameras": [
+                {
+                  "name": "Camera-02",
+                  "videoConfig": {
+                      "source": "-f v4l2 -r 30 -s 1280x720 -i /dev/video1",
+                      "maxStreams": 2,
+                      "maxWidth": 1280,
+                      "maxHeight": 720,
+                      "maxFPS": 30,
+                      "vcodec": "h264_omx"
+                    }
+                }
+            ]
+        }
+    ]
+}
