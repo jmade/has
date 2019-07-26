@@ -68,7 +68,11 @@ function install_mariaDB()
 
 }
 
+
+
 # pymysql
+
+# TODO: More Automation surrounding this
 function install_pymysql()
 {
 	_bolded "Installing pymysql"
@@ -111,14 +115,19 @@ function autorunMotion()
 
 
 
-
+function install_Powerline() 
+{
+	_bolded "Installing Powerline"
+	sudo apt-get -y install powerline
+	_success "Powerline Installed!"
+}
 
 
 function install_GIT()
 {
-	_bolded "Installing GIT"
+	_bolded "Installing git"
 	sudo apt-get -y install git
-	_success "GIT's been GOT!"
+	_success "git Installed!"
 }
 
 
@@ -144,6 +153,7 @@ function install_alaisShortcuts()
 	echo 'alias ls="ls -la --color=auto"' >> ~/.bashrc
 	echo 'alias del="sudo rm -rf"' >> ~/.bashrc
 	echo 'alias hasstart="bash has_start.sh"' >> ~/.bashrc
+	echo 'alias sthome="sudo homebridge -U /home/pi/.homebridge'
 	echo '' >> ~/.bashrc
 
 	_success "bash alias Installed!"
@@ -331,11 +341,14 @@ function installHomebridge()
 
 function installhomebridgePlugins()
 {
-	_bolded "Installing HomeBridge Plugins..."
+	_bolded " - Installing Node.js Plugins - "
 	cd
+	sudo npm install -g api-quick
+	_bolded " ~ Installing HomeBridge Plugins ~ "
 	sudo npm install -g homebridge-camera-rpi
 	sudo npm install -g homebridge-camera-ffmpeg
-	sudo npm install -g api-quick
+	sudo npm install -g homebridge-sonoff-tasmota-http
+	sudo npm install -g homebridge-advanced-http-temperature-humidity
 }
 
 
@@ -418,6 +431,7 @@ function _main()
 	
 	install_GIT
 	install_tmux
+	install_Powerline
 
 	# install_ffmpeg_acel
 
