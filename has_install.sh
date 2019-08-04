@@ -366,7 +366,7 @@ function installhomebridgePlugins()
 	echo 'Finished obtaining plugin files.'
 	sudo npm install -g homebridge-web-motion-sensor
 	_success "HomeBridge Plugins Installed!"
-
+}
 
 
 # NodeJS
