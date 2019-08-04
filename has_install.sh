@@ -26,6 +26,13 @@ function _error()
 	printf "${_red}%s${_reset}\n" "$@"
 }
 
+function _message()
+{	
+	echo ''
+	printf "${_tan}[ ${_reset}${_purple}%s${_reset}${_tan} ]${_reset}\n" "$@"
+	echo ''
+}
+
 
 # ?? 
 function _update() {
@@ -34,34 +41,34 @@ function _update() {
 	_purple "Performing System Upgrade"
 	sudo apt-get -y upgrade
 	_success "System Updates & Upgrade Complete"
+	_message "Rebooting System now"
+	sudo reboot
 }
 
-
-
-
-
-function installPythonHeaders()
-{
-	echo "Python Header Files."
-	sudo apt-get -y install python2.7-dev python3-dev
-	
-}
 
 function installPIP()
 {
-	echo "Install pip Python package manager"
-	wget https://bootstrap.pypa.io/get-pip.py
-	sudo python get-pip.py
+	_message "Installing Pip3"
+	sudo apt-get install python3-pip -y
+	_success "Pip3 Installed Successfully!"
 }
 
-
-
-
+function install_packages()
+{
+	_bolded "Packages"
+	install_GIT
+	install_mariaDB
+	install_tmux
+	installPIP
+	install_Powerline
+	install_pymysql
+	_success "Packages Installed Successfully!"
+}
 
 # MariaDB
 function install_mariaDB()
 {
-	_bolded "Installing MariaDB"
+	_message "Installing MariaDB"
 	sudo apt-get update -y
 	sudo apt-get install mariadb-server -y
 	_success "MariaDB Installation Successful!"
@@ -75,8 +82,8 @@ function install_mariaDB()
 # TODO: More Automation surrounding this
 function install_pymysql()
 {
-	_bolded "Installing pymysql"
-	pip install pymysql
+	_message "Installing pymysql"
+	pip3 install pymysql
 	_success "pymysql Installation Successful!"
 }
 
@@ -112,12 +119,9 @@ function autorunMotion()
 
 
 
-
-
-
 function install_Powerline() 
 {
-	_bolded "Installing Powerline"
+	_message "Installing Powerline"
 	sudo apt-get -y install powerline
 	_success "Powerline Installed!"
 }
@@ -125,7 +129,7 @@ function install_Powerline()
 
 function install_GIT()
 {
-	_bolded "Installing git"
+	_message "Installing git"
 	sudo apt-get -y install git
 	_success "git Installed!"
 }
@@ -133,7 +137,7 @@ function install_GIT()
 
 function install_tmux()
 {
-	echo "Installing tmux"
+	_message "Installing tmux"
 	sudo apt-get -y update
 	sudo apt-get -y install tmux
 	_success "tmux Installed!"
@@ -231,7 +235,7 @@ function install_ffmpeg_acel_rpiZero()
 # installing ffmpeg
 function install_ffmpeg_acel()
 {
-	echo 'yay'
+
 	git clone https://git.ffmpeg.org/ffmpeg.git ffmpeg
 
 	cd ffmpeg
@@ -349,6 +353,7 @@ function installhomebridgePlugins()
 	sudo npm install -g homebridge-camera-ffmpeg
 	sudo npm install -g homebridge-sonoff-tasmota-http
 	sudo npm install -g homebridge-advanced-http-temperature-humidity
+
 }
 
 
@@ -401,23 +406,85 @@ function install_v4l2loopback()
 	_success "'v4l2loopback' Installed!"
 }
 
+
+
+function setupPowerline()
+{
+	echo ''
+	_bolded "Setting up Powerline"
+	echo ''
+	cd
+	cd .local
+	mkdir bin
+	cd bin
+
+	wget https://raw.githubusercontent.com/jmade/has/master/powerline/powerline
+	wget https://raw.githubusercontent.com/jmade/has/master/powerline/powerline-config
+	wget https://raw.githubusercontent.com/jmade/has/master/powerline/powerline-daemon
+	wget https://raw.githubusercontent.com/jmade/has/master/powerline/powerline-lint
+	wget https://raw.githubusercontent.com/jmade/has/master/powerline/powerline-render
+
+	_message "Powerline files installed."
+
+	_message "Adding Powerline Sourcing to .bashrc"
+	echo '' >> ~/.bashrc
+	echo '' >> ~/.bashrc
+	echo '# Source Powerline' >> ~/.bashrc
+	echo '' >> ~/.bashrc
+	echo 'if [ -d "$HOME/.local/bin" ]; then' >> ~/.bashrc
+	echo '    PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
+	echo 'fi' >> ~/.bashrc
+	echo '' >> ~/.bashrc
+	echo 'if [ -f ~/.local/lib/python2.7/site-packages/powerline/bindings/bash/powerline.sh ]; then' >> ~/.bashrc
+	echo '    source ~/.local/lib/python2.7/site-packages/powerline/bindings/bash/powerline.sh' >> ~/.bashrc
+	echo 'fi' >> ~/.bashrc
+	echo '' >> ~/.bashrc
+	echo '' >> ~/.bashrc
+
+	_message "Reloading Shell"
+	cd
+	. ~/.bashrc
+
+	_success "Powerline Setup!"
+
+}
+
+
 function setupForSystem()
 {
+	echo ''
 	_bolded "Preparing Directories"
+	echo ''
+
 	cd
 	mkdir .homebridge
 	cd .homebridge/
 	wget https://raw.githubusercontent.com/jmade/has/master/config.json
 
-	_bolded "HomeBridge Prepared"
+	_message "HomeBridge Prepared"
 
 	cd
 	mkdir .motion
 	cd .motion/
 	wget https://raw.githubusercontent.com/jmade/has/master/motion.conf
 
-	_bolded "Motion Prepared"
+	_message "Motion Prepared"
 
+	_message "Downloading HAS-Start Script"
+	cd
+	wget https://raw.githubusercontent.com/jmade/has/master/has_start.sh
+
+
+	cd
+	wget https://raw.githubusercontent.com/jmade/has/master/.tmux.conf
+	_message "Tmux Configured"
+
+	cd
+	wget https://raw.githubusercontent.com/jmade/has/master/.git-completion.bash
+	_message "git-completion script installed"
+
+
+	setupPowerline
 	install_alaisShortcuts
 
 	_success "Project Preparation Complete"
@@ -428,23 +495,20 @@ function setupForSystem()
 function _main()
 {
 	_bolded "-~- Starting Setup Script -~-"
-	
-	install_GIT
-	install_tmux
-	install_Powerline
+	_message "Starting Script"
 
+	# _update
+	# install_packages
 	# install_ffmpeg_acel
-
 	# installMotion
-
 	# installHomebridge
+	setupForSystem
 
 	# installRPISource
 	# install_v4l2loopback
 
-	# setupForSystem
-
 	_success "-~- Finished Install Script -~-"
+	
 }
 
 
