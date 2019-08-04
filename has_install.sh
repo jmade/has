@@ -157,7 +157,7 @@ function install_alaisShortcuts()
 	echo 'alias ls="ls -la --color=auto"' >> ~/.bashrc
 	echo 'alias del="sudo rm -rf"' >> ~/.bashrc
 	echo 'alias hasstart="bash has_start.sh"' >> ~/.bashrc
-	echo 'alias sthome="sudo homebridge -U /home/pi/.homebridge'
+	echo 'alias sthome="sudo homebridge -U /home/pi/.homebridge' >> ~/.bashrc
 	echo '' >> ~/.bashrc
 
 	_success "bash alias Installed!"
