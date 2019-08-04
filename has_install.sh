@@ -122,7 +122,7 @@ function autorunMotion()
 function install_Powerline() 
 {
 	_message "Installing Powerline"
-	sudo apt-get -y install powerline
+	sudo pip3 install powerline-shell
 	_success "Powerline Installed!"
 }
 
@@ -343,18 +343,29 @@ function installHomebridge()
 }
 
 
+
+# cd && del has_install.sh && wget https://raw.githubusercontent.com/jmade/has/master/has_install.sh
 function installhomebridgePlugins()
 {
 	_bolded " - Installing Node.js Plugins - "
 	cd
-	sudo npm install -g api-quick
 	_bolded " ~ Installing HomeBridge Plugins ~ "
 	sudo npm install -g homebridge-camera-rpi
 	sudo npm install -g homebridge-camera-ffmpeg
+	sudo npm install -g homebridge-camera-ffmpeg-omx
 	sudo npm install -g homebridge-sonoff-tasmota-http
 	sudo npm install -g homebridge-advanced-http-temperature-humidity
 
-}
+	echo 'Installing homebridge-web-motion-sensor'
+	cd
+	mkdir homebridge-web-motion-sensor
+	cd homebridge-web-motion-sensor
+	wget https://raw.githubusercontent.com/jmade/has/master/homebridge-web-motion-sensor/index.js
+	wget https://raw.githubusercontent.com/jmade/has/master/homebridge-web-motion-sensor/package.json
+	cd
+	echo 'Finished obtaining plugin files.'
+	sudo npm install -g homebridge-web-motion-sensor
+	_success "HomeBridge Plugins Installed!"
 
 
 
@@ -414,29 +425,22 @@ function setupPowerline()
 	_bolded "Setting up Powerline"
 	echo ''
 	cd
-	cd .local
-	mkdir bin
-	cd bin
+	mkdir -p ~/.config/powerline-shell
+	powerline-shell --generate-config > ~/.config/powerline-shell/config.json
 
-	wget https://raw.githubusercontent.com/jmade/has/master/powerline/powerline
-	wget https://raw.githubusercontent.com/jmade/has/master/powerline/powerline-config
-	wget https://raw.githubusercontent.com/jmade/has/master/powerline/powerline-daemon
-	wget https://raw.githubusercontent.com/jmade/has/master/powerline/powerline-lint
-	wget https://raw.githubusercontent.com/jmade/has/master/powerline/powerline-render
-
-	_message "Powerline files installed."
+	_message "Default Powerline config generated."
 
 	_message "Adding Powerline Sourcing to .bashrc"
 	echo '' >> ~/.bashrc
 	echo '' >> ~/.bashrc
 	echo '# Source Powerline' >> ~/.bashrc
 	echo '' >> ~/.bashrc
-	echo 'if [ -d "$HOME/.local/bin" ]; then' >> ~/.bashrc
-	echo '    PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
-	echo 'fi' >> ~/.bashrc
+	echo 'function _update_ps1() {' >> ~/.bashrc
+	echo '    PS1=$(powerline-shell $?)' >> ~/.bashrc
+	echo '}' >> ~/.bashrc
 	echo '' >> ~/.bashrc
-	echo 'if [ -f ~/.local/lib/python2.7/site-packages/powerline/bindings/bash/powerline.sh ]; then' >> ~/.bashrc
-	echo '    source ~/.local/lib/python2.7/site-packages/powerline/bindings/bash/powerline.sh' >> ~/.bashrc
+	echo 'if [[ $TERM != linux && ! $PROMPT_COMMAND =~ _update_ps1 ]]; then' >> ~/.bashrc
+	echo '    PROMPT_COMMAND="_update_ps1; $PROMPT_COMMAND"' >> ~/.bashrc
 	echo 'fi' >> ~/.bashrc
 	echo '' >> ~/.bashrc
 	echo '' >> ~/.bashrc
@@ -446,7 +450,7 @@ function setupPowerline()
 	. ~/.bashrc
 
 	_success "Powerline Setup!"
-
+	
 }
 
 
@@ -497,12 +501,13 @@ function _main()
 	_bolded "-~- Starting Setup Script -~-"
 	_message "Starting Script"
 
+	installhomebridgePlugins
 	# _update
 	# install_packages
 	# install_ffmpeg_acel
 	# installMotion
 	# installHomebridge
-	setupForSystem
+	# setupForSystem
 
 	# installRPISource
 	# install_v4l2loopback
