@@ -342,6 +342,44 @@ function installHomebridge()
 
 }
 
+# Custom Homebridge Plugins
+function installCustomHomebridgePlugins()
+{
+	installWebMotionHBPlugin
+	installCameraHBPlugin
+}
+
+
+function installWebMotionHBPlugin()
+{
+	_message 'Downloading homebridge-web-motion-sensor'
+	cd
+	mkdir homebridge-web-motion-sensor
+	cd homebridge-web-motion-sensor
+	wget https://raw.githubusercontent.com/jmade/has/master/homebridge-web-motion-sensor/index.js
+	wget https://raw.githubusercontent.com/jmade/has/master/homebridge-web-motion-sensor/package.json
+	cd
+	_message 'Finished obtaining plugin files.'
+	_message 'Installing homebridge-web-motion-sensor'
+	sudo npm install -g homebridge-web-motion-sensor
+	_success "homebridge-web-motion-sensor Plugin Installed!"
+}
+
+function installCameraHBPlugin()
+{
+	_message 'Downloading homebridge-camera-jmade'
+	cd
+	mkdir homebridge-camera-jmade
+	cd homebridge-camera-jmade
+	wget https://raw.githubusercontent.com/jmade/has/master/homebridge-camera-jmade/index.js 
+	wget https://raw.githubusercontent.com/jmade/has/master/homebridge-camera-jmade/ffmpeg.js
+	wget https://raw.githubusercontent.com/jmade/has/master/homebridge-camera-jmade/package.json 
+	cd
+	_message 'Finished obtaining plugin files.'
+	_message 'Installing homebridge-web-motion-sensor'
+	sudo npm install -g homebridge-camera-jmade
+	_success "homebridge-web-motion-sensor Plugin Installed!"
+}
 
 
 # cd && del has_install.sh && wget https://raw.githubusercontent.com/jmade/has/master/has_install.sh
@@ -356,15 +394,8 @@ function installhomebridgePlugins()
 	sudo npm install -g homebridge-sonoff-tasmota-http
 	sudo npm install -g homebridge-advanced-http-temperature-humidity
 
-	echo 'Installing homebridge-web-motion-sensor'
-	cd
-	mkdir homebridge-web-motion-sensor
-	cd homebridge-web-motion-sensor
-	wget https://raw.githubusercontent.com/jmade/has/master/homebridge-web-motion-sensor/index.js
-	wget https://raw.githubusercontent.com/jmade/has/master/homebridge-web-motion-sensor/package.json
-	cd
-	echo 'Finished obtaining plugin files.'
-	sudo npm install -g homebridge-web-motion-sensor
+	installCustomHomebridgePlugins
+	
 	_success "HomeBridge Plugins Installed!"
 }
 
