@@ -235,63 +235,75 @@ function install_ffmpeg_acel_rpiZero()
 # installing ffmpeg
 function install_ffmpeg_acel()
 {
-
+	_message "Installing FFMPEG"
+	cd
 	git clone https://git.ffmpeg.org/ffmpeg.git ffmpeg
 
+	_message "Preparing Directories"
 	cd ffmpeg
 	mkdir dependencies
 	cd dependencies/
 	mkdir output
 
-	_bolded "Installing Dependancies"
+	_message "Installing Dependancies"
 	sudo apt-get install libomxil-bellagio-dev -y
 	sudo apt-get install pkg-config -y
 	sudo apt-get install autoconf -y
 	sudo apt-get install automake -y
 	sudo apt-get install libtool -y
+	sudo apt-get install lame -y
 	sudo apt install checkinstall
-	_success "Dependancies!"
+	_success "Dependancies Installed!"
 
-	_bolded "Installing x264"
 
+	_message "Installing x264"
 	git clone http://git.videolan.org/git/x264.git
 	cd x264
 	./configure --enable-static --prefix=/home/pi/ffmpeg/dependencies/output/
+	echo ''
 	_bolded "Compiling x264"
 	sudo make -j4
 	sudo make install
 	cd ..
-	_success "x264"
+	echo ''
+	_success "x264 Compiled!"
 
-	_bolded "Installing alsa"
-	wget ftp://ftp.alsa-project.org/pub/lib/alsa-lib-1.1.7.tar.bz2
-	tar xjf alsa-lib-1.1.7.tar.bz2
-	cd alsa-lib-1.1.7/
+	_message "Installing ALSA"
+	wget ftp://ftp.alsa-project.org/pub/lib/alsa-lib-1.1.9.tar.bz2
+	tar xjf alsa-lib-1.1.9.tar.bz2
+	cd alsa-lib-1.1.9/
 	./configure --prefix=/home/pi/ffmpeg/dependencies/output
-	_bolded "Compiling alsa"
+	echo ''
+	_bolded "Compiling ALSA"
 	sudo make -j4
 	sudo make install
 	cd ..
-	_success "alsa"
+	echo ''
+	_success "ALSA Compiled"
 
-	_bolded "Installing aac"
+	_message "Installing AAC"
 	git clone https://github.com/mstorsjo/fdk-aac.git
 	cd fdk-aac
 	./autogen.sh
 	./configure --enable-shared --enable-static
-	_bolded "Compiling aac"
+	echo ''
+	_bolded "Compiling AAC"
 	sudo make -j4
 	sudo make install
 	sudo ldconfig
 	cd ..
-	_success "aac"
+	echo ''
+	_success "AAC Compiled"
 
+	echo ''
+	_bolded "Compiling FFMPEG"
 	cd $HOME/ffmpeg
-	_bolded "Compiling ffmpeg"	
-	./configure --prefix=/home/pi/ffmpeg/dependencies/output --enable-gpl --enable-mmal --enable-libx264 --enable-nonfree --enable-libfdk_aac --enable-omx --enable-omx-rpi --extra-cflags="-I/home/pi/ffmpeg/dependencies/output/include" --extra-ldflags="-L/home/pi/ffmpeg/dependencies/output/lib" --extra-libs="-lx264 -lpthread -lm -ldl"
+	./configure --prefix=/home/pi/ffmpeg/dependencies/output --enable-openssl --enable-libmp3lame --enable-gpl --enable-mmal --enable-libx264 --enable-nonfree --enable-libfdk_aac --enable-omx --enable-omx-rpi --extra-cflags="-I/home/pi/ffmpeg/dependencies/output/include" --extra-ldflags="-L/home/pi/ffmpeg/dependencies/output/lib" --extra-libs="-lx264 -lpthread -lm -ldl"
 	sudo make -j4
 	sudo make install
 
+	echo ''
+	_success "FFMPEG Compiled"
 	# 
 	echo 'Adding ffmpeg to Path '
 	echo 'export PATH=$PATH:$HOME/ffmpeg' >> ~/.bashrc
@@ -299,6 +311,11 @@ function install_ffmpeg_acel()
 	#
 	echo "Copying ffmpeg files to '/usr/local/bin' "
 	# 
+	sudo rm -rf /home/pi/ffmpeg/ffprobe_g  
+	sudo rm -rf /home/pi/ffmpeg/ffprobe  
+	sudo rm -rf /home/pi/ffmpeg/ffmpeg_g  
+	sudo rm -rf /home/pi/ffmpeg/ffmpeg  
+
 	sudo cp /home/pi/ffmpeg/ffprobe_g  /usr/local/bin
 	sudo cp /home/pi/ffmpeg/ffprobe  /usr/local/bin
 	sudo cp /home/pi/ffmpeg/ffmpeg_g  /usr/local/bin
@@ -306,7 +323,7 @@ function install_ffmpeg_acel()
 	# 
 	echo "Copy Finished"
 
-	_success "ffmpeg Installed!"
+	_success "FFMPEG Installed!"
 }
 
 
