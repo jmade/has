@@ -1,0 +1,13 @@
+{
+  "name": "homebridge-tv",
+  "version": "0.0.34",
+  "description": "Custom Homebridge plugin for Controlling my TV.",
+  "license": "ISC",
+  "keywords": [
+    "homebridge-plugin"
+  ],
+  "engines": {
+    "node": ">=5.0.0",
+    "homebridge": ">=0.4.5"
+  }
+}
